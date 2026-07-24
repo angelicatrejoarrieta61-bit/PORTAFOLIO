@@ -5,6 +5,6 @@
    La anon key es publica por diseno: la seguridad la da RLS.
    ============================================================ */
 window.APP_CONFIG = {
-  SUPABASE_URL: "TU_SUPABASE_URL",
-  SUPABASE_ANON_KEY: "TU_SUPABASE_ANON_KEY"
+  SUPABASE_URL: "https://fwguqporpryhnokrsuva.supabase.co/rest/v1/",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3Z3VxcG9ycHJ5aG5va3JzdXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTc3MjIsImV4cCI6MjEwMDQzMzcyMn0.LOJ7A3SbWlKbujDlqRDmkz6GeP56neyWMQna2TWLcM0"
 };
