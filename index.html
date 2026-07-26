@@ -292,30 +292,47 @@ body.editing .pj:hover .pj-th::before{opacity:1}
 /* ============================================================
    MODALES  (3D giratorio para contacto | cristal para informacion)
    ============================================================ */
-.mask{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:24px}
+.mask{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:24px;
+  perspective:1400px;perspective-origin:var(--pox,50%) var(--poy,50%)}
 .mask.on{display:flex}
-/* velo: vive en un pseudo-elemento para NO aplanar la perspectiva del escenario */
-.mask::before{content:"";position:absolute;inset:0;z-index:0;background:rgba(4,5,3,.74);
-  -webkit-backdrop-filter:blur(11px) saturate(120%);backdrop-filter:blur(11px) saturate(120%);
-  opacity:0;transition:opacity .4s ease}
-.mask.vis::before{opacity:1}
-.mask.p3d{perspective:var(--persp,1500px);perspective-origin:var(--pox,50%) var(--poy,50%);transform-style:preserve-3d}
-.mcard{position:relative;z-index:2;width:min(860px,100%);max-height:min(80vh,760px);display:flex;flex-direction:column;will-change:transform,opacity;
-  border-radius:22px;border:1px solid rgba(255,255,255,.16);
-  background:linear-gradient(150deg,rgba(20,22,16,.9),rgba(10,11,8,.94));
-  -webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%);
-  box-shadow:0 30px 90px -20px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.16),0 0 60px -20px var(--lime-glow);
-  transform:translateY(20px) scale(.96);opacity:0;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .35s ease}
-.mask.vis .mcard{transform:none;opacity:1}
+/* velo de fondo (con blur) en pseudo-elemento: NO envuelve la tarjeta */
+.mask::before{content:"";position:absolute;inset:0;z-index:0;background:rgba(4,5,3,.76);
+  -webkit-backdrop-filter:blur(12px) saturate(120%);backdrop-filter:blur(12px) saturate(120%);
+  opacity:0;transition:opacity .45s ease}
+.mask.on::before{opacity:1}
+/* la tarjeta ROTA: sin backdrop-filter (lo aplanaria). Vidrio con gradiente opaco. */
+.mcard{position:relative;z-index:2;width:min(880px,100%);max-height:min(82vh,780px);display:flex;flex-direction:column;
+  will-change:transform,opacity;transform-origin:var(--tox,50%) var(--toy,50%);backface-visibility:hidden;
+  border-radius:22px;border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(155deg,rgba(26,29,20,.98),rgba(12,14,9,.99));
+  box-shadow:0 40px 100px -20px rgba(0,0,0,.92),inset 0 1px 0 rgba(255,255,255,.18),0 0 70px -18px var(--lime-glow);
+  opacity:0}
+/* la animacion se lanza al abrir; el estado final queda fijado por forwards */
+.mask.spin .mcard{animation:mSpin .8s cubic-bezier(.16,.84,.3,1) both}
+.mask.slide .mcard{animation:mSlide .55s cubic-bezier(.22,1,.36,1) both}
+@keyframes mSpin{
+  0%{opacity:0;transform:perspective(1200px) rotateX(18deg) translateY(60px) scale(.8)}
+  55%{opacity:1}
+  100%{opacity:1;transform:perspective(1200px) rotateX(0deg) translateY(0) scale(1)}
+}
+@keyframes mSlide{
+  0%{opacity:0;transform:translateY(40px) scale(.92)}
+  60%{opacity:1}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+/* barrido de luz que cruza la tarjeta al abrir */
+@keyframes mSheen{
+  0%{transform:translateX(-120%) skewX(-18deg);opacity:0}
+  30%{opacity:.7}
+  100%{transform:translateX(220%) skewX(-18deg);opacity:0}
+}
+.mask.on .mcard::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;z-index:3;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.14),transparent);
+  animation:mSheen 1.1s ease .25s both}
 .mcard::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
-  background:linear-gradient(140deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.03) 32%,transparent 58%)}
-/* giro 3D apuntando al boton */
-.mask.p3d .mcard{transform-origin:var(--tox,50%) var(--toy,50%);backface-visibility:hidden;
-  transform:rotateY(var(--ry,-92deg)) rotateX(var(--rx,14deg)) translate3d(var(--tx,-40px),var(--ty,0),-420px) scale(.6);opacity:0;
-  transition:transform 1.05s cubic-bezier(.16,.84,.28,1),opacity .55s ease}
-.mask.p3d.vis .mcard{transform:rotateY(0deg) rotateX(0deg) translate3d(0,0,0) scale(1);opacity:1}
+  background:linear-gradient(140deg,rgba(255,255,255,.15) 0%,rgba(255,255,255,.03) 32%,transparent 58%)}
 .mpoint{position:fixed;z-index:121;width:0;height:0;opacity:0;pointer-events:none;transition:opacity .4s ease .25s}
-.mask.vis+.mpoint,.mpoint.vis{opacity:1}
+.mpoint.vis{opacity:1}
 .mpoint svg{position:absolute;left:0;top:0;overflow:visible}
 .mhead{position:relative;z-index:3;padding:26px 34px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
 .mkicker{font-family:var(--f-sub),sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);font-weight:800}
@@ -323,10 +340,14 @@ body.editing .pj:hover .pj-th::before{opacity:1}
   text-shadow:0 0 12px var(--lime-glow),0 0 34px rgba(201,243,29,.35)}
 .msub{font-family:var(--f-sub),sans-serif;font-size:calc(var(--s-sub)*.95);color:var(--c-sub);margin-top:5px}
 .mbody{position:relative;z-index:3;padding:22px 34px 28px;overflow-y:auto;font-family:var(--f-body),sans-serif;
-  font-size:calc(var(--s-body)*1.02);color:var(--c-body);line-height:1.78;column-gap:34px}
-.mbody.cols{columns:2}
-.mbody.cols h4{column-span:all}
-@media(max-width:640px){.mbody.cols{columns:1}}
+  font-size:calc(var(--s-body)*1.02);color:var(--c-body);line-height:1.78}
+/* dos columnas por BLOQUES completos (titulo+parrafo juntos), sin partir texto */
+.mbody.cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 34px;align-content:start}
+.mbody.cols .mblock{break-inside:avoid}
+.mbody.cols>p:first-child,.mbody.cols>.mfull{grid-column:1 / -1}
+@media(max-width:640px){.mbody.cols{grid-template-columns:1fr}}
+.mblock h4{margin-top:0}
+.mblock+.mblock{margin-top:0}
 .mbody::-webkit-scrollbar{width:6px}
 .mbody::-webkit-scrollbar-thumb{background:rgba(201,243,29,.35);border-radius:99px}
 .mbody h4{font-family:var(--f-card),sans-serif;font-size:13px;color:var(--lime);margin:16px 0 7px;letter-spacing:.02em;
@@ -704,70 +725,31 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
 <div class="mpoint" id="mPoint"><svg width="1" height="1"><path id="mPointPath" d="" fill="none" stroke="var(--lime)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="4 5" opacity=".85"/><circle id="mPointDot" cx="0" cy="0" r="4" fill="var(--lime)"/></svg></div>
 
 
-<div class="mask" id="mkAbout" role="dialog" aria-modal="true" aria-labelledby="ttAbout">
+<div class="mask p3d" id="mkAbout" role="dialog" aria-modal="true" aria-labelledby="ttAbout">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="mhead"><p class="mkicker">Perfil</p><h3 class="mtitle" id="ttAbout" contenteditable="true" data-t="mkAboT">Sobre m&iacute;</h3><p class="msub" contenteditable="true" data-t="mkAboS">Desarrollador de ecommerce y automatizaciones &middot; Ciudad de M&eacute;xico</p></div>
-    <div class="mbody cols" contenteditable="true" data-t="mkAboB">
-      <p>Construyo tiendas en l&iacute;nea y los sistemas que las mantienen funcionando. No entrego maquetas: entrego c&oacute;digo en producci&oacute;n, con inventario conectado, pagos operando y m&eacute;tricas que se pueden leer.</p>
-      <h4>C&oacute;mo trabajo</h4>
-      <p>Cada proyecto empieza midiendo, no interpretando. Reviso el sitio actual, el flujo de compra y d&oacute;nde se pierde el dinero; despu&eacute;s dise&ntilde;o la soluci&oacute;n completa y la construyo modular, documentada y lista para escalar. Nada de parches temporales.</p>
-      <h4>En qu&eacute; me especializo</h4>
-      <ul>
-        <li><b>Shopify a fondo:</b> temas custom en Liquid, secciones OS 2.0, Admin API, GraphQL e integraciones de inventario.</li>
-        <li><b>Aplicaciones modernas:</b> React, TypeScript, Vite y Supabase, desplegadas en Vercel.</li>
-        <li><b>Automatizaci&oacute;n:</b> bots de WhatsApp sobre la API de Meta, funciones serverless y procesos que corren solos.</li>
-        <li><b>SEO t&eacute;cnico:</b> datos estructurados, Core Web Vitals y arquitectura sem&aacute;ntica de producto.</li>
-      </ul>
-      <h4>Lo que puedes esperar</h4>
-      <p>Archivos completos y listos para producci&oacute;n, sin fragmentos ni instrucciones a medias. Documentaci&oacute;n de cada secci&oacute;n. Respuesta el mismo d&iacute;a. Y un est&aacute;ndar visual que no se negocia: limpio, claro, r&aacute;pido y bien dise&ntilde;ado.</p>
-      <h4>Ahora mismo</h4>
-      <p>Operando dos plataformas de ecommerce en producci&oacute;n y desplegando un bot de WhatsApp para una convenci&oacute;n corporativa de 700 asistentes. Disponible para proyectos nuevos.</p>
-    </div>
+    <div class="mbody cols" contenteditable="true" data-t="mkAboB"><p>Construyo tiendas en l&iacute;nea y los sistemas que las mantienen funcionando. No entrego maquetas: entrego c&oacute;digo en producci&oacute;n, con inventario conectado, pagos operando y m&eacute;tricas que se pueden leer.</p><div class="mblock"><h4>C&oacute;mo trabajo</h4><p>Cada proyecto empieza midiendo, no interpretando. Reviso el sitio actual, el flujo de compra y d&oacute;nde se pierde el dinero; despu&eacute;s dise&ntilde;o la soluci&oacute;n completa y la construyo modular, documentada y lista para escalar.</p></div><div class="mblock"><h4>En qu&eacute; me especializo</h4><p><b>Shopify a fondo:</b> temas custom en Liquid, secciones OS 2.0, Admin API, GraphQL e integraciones de inventario. <b>Aplicaciones modernas:</b> React, TypeScript, Vite y Supabase en Vercel. <b>Automatizaci&oacute;n:</b> bots de WhatsApp sobre la API de Meta y funciones serverless. <b>SEO t&eacute;cnico:</b> datos estructurados y Core Web Vitals.</p></div><div class="mblock"><h4>Lo que puedes esperar</h4><p>Archivos completos y listos para producci&oacute;n, sin fragmentos ni instrucciones a medias. Documentaci&oacute;n de cada secci&oacute;n. Respuesta el mismo d&iacute;a. Un est&aacute;ndar visual que no se negocia: limpio, claro, r&aacute;pido y bien dise&ntilde;ado.</p></div><div class="mblock"><h4>Ahora mismo</h4><p>Operando dos plataformas de ecommerce en producci&oacute;n y desplegando un bot de WhatsApp para una convenci&oacute;n corporativa de 700 asistentes. Disponible para proyectos nuevos.</p></div></div>
   </div>
 </div>
 
-<div class="mask" id="mkServ" role="dialog" aria-modal="true" aria-labelledby="ttServ">
+<div class="mask p3d" id="mkServ" role="dialog" aria-modal="true" aria-labelledby="ttServ">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="mhead"><p class="mkicker">Lo que hago</p><h3 class="mtitle" id="ttServ" contenteditable="true" data-t="mkSerT">Servicios</h3><p class="msub" contenteditable="true" data-t="mkSerS">Del dise&ntilde;o al despliegue, todo bajo un mismo est&aacute;ndar</p></div>
-    <div class="mbody cols" contenteditable="true" data-t="mkSerB">
-      <h4>Ecommerce Shopify</h4>
-      <p>Temas a medida sobre Liquid, secciones OS 2.0 reutilizables, catálogos grandes con paginaci&oacute;n, quickview, filtros y checkout optimizado. Migraciones e integraci&oacute;n con inventario f&iacute;sico.</p>
-      <h4>Desarrollo Web</h4>
-      <p>Aplicaciones en React + TypeScript + Vite con Supabase de respaldo, autenticaci&oacute;n, base de datos y despliegue continuo en Vercel. C&oacute;digo modular y mantenible.</p>
-      <h4>Automatizaci&oacute;n &amp; Bots</h4>
-      <p>Bots de WhatsApp sobre la API oficial de Meta, funciones serverless, webhooks e integraciones entre plataformas. Cero licencias innecesarias.</p>
-      <h4>SEO T&eacute;cnico</h4>
-      <p>Auditor&iacute;a completa, datos estructurados, sitemap y robots, Core Web Vitals, SEO por ruta y arquitectura sem&aacute;ntica pensada para grafos de conocimiento.</p>
-      <h4>Dise&ntilde;o de Producto</h4>
-      <p>Interfaces pixel-perfect, sistemas de dise&ntilde;o con tokens medibles, dashboards y paneles administrativos. Responsivo real, no adaptado a la fuerza.</p>
-      <h4>C&oacute;mo cotizo</h4>
-      <p>Por alcance cerrado, con entregables definidos y fechas. Escr&iacute;beme con lo que necesitas y te devuelvo propuesta y tiempos.</p>
-    </div>
+    <div class="mbody cols" contenteditable="true" data-t="mkSerB"><div class="mblock"><h4>Ecommerce Shopify</h4><p>Temas a medida sobre Liquid, secciones OS 2.0 reutilizables, cat&aacute;logos grandes con paginaci&oacute;n, quickview, filtros y checkout optimizado. Migraciones e integraci&oacute;n con inventario f&iacute;sico.</p></div><div class="mblock"><h4>Desarrollo Web</h4><p>Aplicaciones en React + TypeScript + Vite con Supabase de respaldo, autenticaci&oacute;n, base de datos y despliegue continuo en Vercel. C&oacute;digo modular y mantenible.</p></div><div class="mblock"><h4>Automatizaci&oacute;n &amp; Bots</h4><p>Bots de WhatsApp sobre la API oficial de Meta, funciones serverless, webhooks e integraciones entre plataformas. Cero licencias innecesarias.</p></div><div class="mblock"><h4>SEO T&eacute;cnico</h4><p>Auditor&iacute;a completa, datos estructurados, sitemap y robots, Core Web Vitals, SEO por ruta y arquitectura sem&aacute;ntica pensada para grafos de conocimiento.</p></div><div class="mblock"><h4>Dise&ntilde;o de Producto</h4><p>Interfaces pixel-perfect, sistemas de dise&ntilde;o con tokens medibles, dashboards y paneles administrativos. Responsivo real, no adaptado a la fuerza.</p></div><div class="mblock mfull"><h4>C&oacute;mo cotizo</h4><p>Por alcance cerrado, con entregables definidos y fechas. Escr&iacute;beme con lo que necesitas y te devuelvo propuesta y tiempos.</p></div></div>
   </div>
 </div>
 
-<div class="mask" id="mkProy" role="dialog" aria-modal="true" aria-labelledby="ttProy">
+<div class="mask p3d" id="mkProy" role="dialog" aria-modal="true" aria-labelledby="ttProy">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="mhead"><p class="mkicker">Portafolio</p><h3 class="mtitle" id="ttProy" contenteditable="true" data-t="mkProT">Proyectos</h3><p class="msub" contenteditable="true" data-t="mkProS">Trabajo en producci&oacute;n, no conceptos</p></div>
-    <div class="mbody cols" contenteditable="true" data-t="mkProB">
-      <h4>Tecnocasa Group &middot; Ecommerce Shopify</h4>
-      <p>Plataforma de merchandising para franquiciatarios en todo M&eacute;xico. Tema custom sobre Horizon: header con blur progresivo, hero cinematogr&aacute;fico con transiciones, panel de administraci&oacute;n con doble compuerta y cat&aacute;logo de 65 productos con inventario por QR y exportaci&oacute;n a PDF.</p>
-      <h4>Divina Store MX &middot; Skincare &amp; SEO</h4>
-      <p>Tienda de skincare en React + TypeScript + Supabase sobre Vercel. Pasarela Clip con tokenizaci&oacute;n del lado del servidor, SEO por ruta, arquitectura sem&aacute;ntica de producto y estrategia de tr&aacute;fico en Pinterest y TikTok.</p>
-      <h4>Convenci&oacute;n corporativa &middot; Bot de WhatsApp</h4>
-      <p>Bot para una convenci&oacute;n de ventas de ~700 asistentes. Arquitectura serverless en Vercel sobre la API de WhatsApp Cloud de Meta, sin licencias de plataforma. Registro, agenda, avisos y soporte en tiempo real.</p>
-      <h4>Dashboard de inventario QR</h4>
-      <p>Backend en Vercel con OAuth de Shopify y GraphQL para ajustes de inventario validados por PIN, historial de movimientos y exportaci&oacute;n a PDF. Escaneas el c&oacute;digo del producto y actualizas existencias desde el celular.</p>
-      <h4>Dashboard financiero</h4>
-      <p>Aplicaci&oacute;n de flujo de efectivo con planeaci&oacute;n por fecha de cobro, simulaci&oacute;n de escenarios, temas claro y oscuro y exportaci&oacute;n a PDF. Todo el estado en el cliente, sin dependencias.</p>
-    </div>
+    <div class="mbody cols" contenteditable="true" data-t="mkProB"><div class="mblock"><h4>Tecnocasa Group &middot; Ecommerce Shopify</h4><p>Plataforma de merchandising para franquiciatarios en todo M&eacute;xico. Tema custom sobre Horizon: header con blur progresivo, hero cinematogr&aacute;fico, panel de administraci&oacute;n con doble compuerta y cat&aacute;logo de 65 productos con inventario por QR.</p></div><div class="mblock"><h4>Divina Store MX &middot; Skincare &amp; SEO</h4><p>Tienda de skincare en React + TypeScript + Supabase sobre Vercel. Pasarela Clip con tokenizaci&oacute;n del lado del servidor, SEO por ruta, arquitectura sem&aacute;ntica de producto y estrategia de tr&aacute;fico en Pinterest y TikTok.</p></div><div class="mblock"><h4>Convenci&oacute;n corporativa &middot; Bot de WhatsApp</h4><p>Bot para una convenci&oacute;n de ventas de ~700 asistentes. Arquitectura serverless en Vercel sobre la API de WhatsApp Cloud de Meta, sin licencias. Registro, agenda, avisos y soporte en tiempo real.</p></div><div class="mblock"><h4>Dashboard de inventario QR</h4><p>Backend en Vercel con OAuth de Shopify y GraphQL para ajustes de inventario validados por PIN, historial de movimientos y exportaci&oacute;n a PDF. Escaneas el c&oacute;digo del producto y actualizas existencias desde el celular.</p></div><div class="mblock"><h4>Dashboard financiero</h4><p>Aplicaci&oacute;n de flujo de efectivo con planeaci&oacute;n por fecha de cobro, simulaci&oacute;n de escenarios, temas claro y oscuro y exportaci&oacute;n a PDF. Todo el estado en el cliente, sin dependencias.</p></div></div>
   </div>
 </div>
 
-<div class="mask" id="mkPromo" role="dialog" aria-modal="true" aria-labelledby="ttPromo">
+<div class="mask p3d" id="mkPromo" role="dialog" aria-modal="true" aria-labelledby="ttPromo">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="mhead"><p class="mkicker">Otras secciones</p><h3 class="mtitle" id="ttPromo" contenteditable="true" data-t="mkPromoT">Programa de promoci&oacute;n</h3><p class="msub" contenteditable="true" data-t="mkPromoS">Beneficios para clientes y aliados</p></div>
@@ -775,7 +757,7 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
   </div>
 </div>
 
-<div class="mask" id="mkTesters" role="dialog" aria-modal="true" aria-labelledby="ttTesters">
+<div class="mask p3d" id="mkTesters" role="dialog" aria-modal="true" aria-labelledby="ttTesters">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="mhead"><p class="mkicker">Otras secciones</p><h3 class="mtitle" id="ttTesters" contenteditable="true" data-t="mkTestT">Programa testers</h3><p class="msub" contenteditable="true" data-t="mkTestS">Creadores e influencers</p></div>
@@ -783,7 +765,7 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
   </div>
 </div>
 
-<div class="mask" id="mkLegal" role="dialog" aria-modal="true" aria-labelledby="ttLegal">
+<div class="mask p3d" id="mkLegal" role="dialog" aria-modal="true" aria-labelledby="ttLegal">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="mhead"><p class="mkicker">Documento</p><h3 class="mtitle" id="ttLegal" contenteditable="true" data-t="mkLegT">Legales y Copyright</h3><p class="msub" contenteditable="true" data-t="mkLegS">Actualizado: 23 de julio de 2026</p></div>
@@ -1049,23 +1031,39 @@ $("imX").onclick=function(){$("imgmgr").classList.remove("open")};
 var OPEN=null;
 function openModal(id,fromEl){
   var m=$(id);if(!m)return;
-  OPEN=m;m.classList.add("on");
-  if(m.classList.contains("p3d")&&fromEl){
-    var r=fromEl.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-    var px=(cx/window.innerWidth*100).toFixed(1),py=(cy/window.innerHeight*100).toFixed(1);
-    m.style.setProperty("--pox",px+"%");m.style.setProperty("--poy",py+"%");
-    m.style.setProperty("--tox",cx<window.innerWidth/2?"0%":"100%");
-    m.style.setProperty("--toy",cy<window.innerHeight/2?"0%":"100%");
-    var dist=Math.max(1000,Math.min(2400,window.innerWidth*1.15));
-    m.style.setProperty("--persp",dist+"px");
-    var left=cx<window.innerWidth/2;
-    m.style.setProperty("--ry",(left?-92:92)+"deg");
-    m.style.setProperty("--rx",(cy<window.innerHeight/2?14:-14)+"deg");
-    m.style.setProperty("--tx",(left?-60:60)+"px");
-    setTimeout(function(){drawPointer(fromEl,m)},60);
-  }
-  requestAnimationFrame(function(){requestAnimationFrame(function(){m.classList.add("vis")})});
+  OPEN=m;
+  var card=m.querySelector(".mcard");
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  // limpiar estado previo
+  m.classList.remove("on","spin","slide","vis");
+  card.style.animation="none";
+  if(fromEl&&!reduce){
+    var r=fromEl.getBoundingClientRect();
+    var cx=r.left+r.width/2, cy=r.top+r.height/2;
+    var W=window.innerWidth, H=window.innerHeight;
+    m.style.setProperty("--pox",(cx/W*100).toFixed(1)+"%");
+    m.style.setProperty("--poy",(cy/H*100).toFixed(1)+"%");
+    var left=cx<W/2, top=cy<H/2;
+    m.style.setProperty("--tox",left?"14%":"86%");
+    m.style.setProperty("--toy",top?"14%":"86%");
+    m.style.setProperty("--ry",(left?-88:88)+"deg");
+    m.style.setProperty("--rx",(top?16:-16)+"deg");
+    m.style.setProperty("--tx",((cx-W/2)/W*70).toFixed(0)+"px");
+    m.style.setProperty("--ty",((cy-H/2)/H*50).toFixed(0)+"px");
+    m.__from=fromEl; m.__anim="spin";
+  } else { m.__from=null; m.__anim=reduce?null:"slide"; }
+  m.classList.add("on");
   document.body.style.overflow="hidden";
+  // aplicar la animacion DIRECTAMENTE por estilo inline (imposible de ignorar)
+  card.style.animation="none";
+  void card.offsetWidth;                    // reflow: reinicia la animacion
+  if(reduce){ card.style.opacity="1"; card.style.transform="none"; }
+  else {
+    // animacion de entrada robusta (2D+perspective, funciona en todo navegador)
+    card.style.animation="mSpin .6s cubic-bezier(.34,1.3,.5,1) both";
+  }
+  m.classList.add("vis");
+  if(m.__from&&!reduce)setTimeout(function(){drawPointer(m.__from,m)},240);
 }
 function drawPointer(fromEl,m){
   var card=m.querySelector(".mcard");if(!card)return;
@@ -1083,8 +1081,11 @@ function drawPointer(fromEl,m){
 }
 function closeModal(){
   if(!OPEN)return;
-  var m=OPEN;m.classList.remove("vis");$("mPoint").classList.remove("vis");
-  setTimeout(function(){m.classList.remove("on");document.body.style.overflow=""},380);
+  var m=OPEN,card=m.querySelector(".mcard");
+  $("mPoint").classList.remove("vis");
+  // animacion de salida rapida
+  card.style.animation="mSlide .25s ease reverse both";
+  setTimeout(function(){m.classList.remove("on","spin","slide","vis");card.style.animation="";card.style.opacity="";card.style.transform="";document.body.style.overflow="";m.__from=null},240);
   OPEN=null;
 }
 document.addEventListener("click",function(e){
