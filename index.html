@@ -44,15 +44,56 @@ body{
   background-size:cover;background-position:center;background-attachment:fixed;
 }
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--l1-bg);-webkit-backdrop-filter:blur(var(--l1-blur)) contrast(var(--l1-con));backdrop-filter:blur(var(--l1-blur)) contrast(var(--l1-con))}
+/* manchas de color saturado en deriva: el cristal necesita algo que refractar */
+.lg-field{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(95px) saturate(150%);opacity:.55}
+.lg-field span{position:absolute;border-radius:50%;mix-blend-mode:screen;will-change:transform}
+.lg-b1{width:44vw;height:44vw;left:8%;top:-6%;background:radial-gradient(circle,#c9f31d,transparent 62%);animation:lgd1 38s ease-in-out infinite alternate}
+.lg-b2{width:40vw;height:40vw;right:2%;top:22%;background:radial-gradient(circle,#1e7d5a,transparent 62%);animation:lgd2 44s ease-in-out infinite alternate}
+.lg-b3{width:38vw;height:38vw;left:24%;bottom:-10%;background:radial-gradient(circle,#5b3fd6,transparent 64%);animation:lgd3 52s ease-in-out infinite alternate}
+.lg-b4{width:30vw;height:30vw;right:20%;bottom:6%;background:radial-gradient(circle,#d64f9c,transparent 66%);animation:lgd1 47s ease-in-out infinite alternate-reverse}
+@keyframes lgd1{to{transform:translate3d(6%,8%,0) scale(1.14)}}
+@keyframes lgd2{to{transform:translate3d(-7%,5%,0) scale(1.1)}}
+@keyframes lgd3{to{transform:translate3d(5%,-6%,0) scale(1.16)}}
+/* grano global que rompe el banding de los gradientes */
+.lg-grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.14;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E")}
+@media(prefers-reduced-motion:reduce){.lg-field span{animation:none!important}}
 .wrap{position:relative;z-index:5;max-width:var(--page-w);margin:0 auto;padding:var(--page-pad)}
 svg{display:block}
 
 /* ---------- capas ---------- */
+/* ===== LIQUID GLASS · stack de 5 capas (Apple) ===== */
 .l2,.l3,.l4{position:relative;isolation:isolate}
-.l2{background:var(--l2-bg);border:1px solid var(--edge);border-radius:var(--r);-webkit-backdrop-filter:blur(var(--l2-blur)) saturate(140%) contrast(var(--l2-con));backdrop-filter:blur(var(--l2-blur)) saturate(140%) contrast(var(--l2-con));box-shadow:0 14px 40px -16px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.045)}
-.l3{background:var(--l3-bg);border:1px solid var(--edge);border-radius:var(--r-sm);-webkit-backdrop-filter:blur(var(--l3-blur)) saturate(130%) contrast(var(--l3-con));backdrop-filter:blur(var(--l3-blur)) saturate(130%) contrast(var(--l3-con))}
-.l4{background:var(--l4-bg);border:1px solid var(--edge);border-radius:var(--r-xs);-webkit-backdrop-filter:blur(var(--l4-blur)) contrast(var(--l4-con));backdrop-filter:blur(var(--l4-blur)) contrast(var(--l4-con))}
-@supports not (backdrop-filter:blur(1px)){.l2{background:#0e0e0e}.l3{background:#151515}.l4{background:#181818}}
+/* Capa 3: relleno en gradiente de 3 paradas (espesor optico) */
+.l2{background:linear-gradient(160deg,var(--l2-bg),color-mix(in srgb,var(--l2-bg) 62%,transparent) 55%,color-mix(in srgb,var(--l2-bg) 40%,transparent));
+  border-radius:var(--r);
+  -webkit-backdrop-filter:blur(var(--l2-blur)) saturate(185%) brightness(1.05);backdrop-filter:blur(var(--l2-blur)) saturate(185%) brightness(1.05);
+  box-shadow:0 1px 2px rgba(3,6,4,.4),0 18px 42px -12px rgba(3,6,4,.72),
+    inset 0 1px 0 rgba(255,255,255,.4),inset 0 0 20px rgba(120,150,90,.05),inset 0 -1px 3px rgba(20,40,15,.18)}
+.l3{background:linear-gradient(160deg,color-mix(in srgb,var(--l3-bg) 100%,transparent),color-mix(in srgb,var(--l3-bg) 55%,transparent) 55%,color-mix(in srgb,var(--l3-bg) 35%,transparent));
+  border-radius:var(--r-sm);
+  -webkit-backdrop-filter:blur(var(--l3-blur)) saturate(180%) brightness(1.04);backdrop-filter:blur(var(--l3-blur)) saturate(180%) brightness(1.04);
+  box-shadow:0 1px 2px rgba(3,6,4,.36),0 12px 28px -10px rgba(3,6,4,.62),
+    inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 3px rgba(20,40,15,.14)}
+.l4{background:linear-gradient(160deg,color-mix(in srgb,var(--l4-bg) 100%,transparent),color-mix(in srgb,var(--l4-bg) 55%,transparent) 60%,color-mix(in srgb,var(--l4-bg) 32%,transparent));
+  border-radius:var(--r-xs);
+  -webkit-backdrop-filter:blur(var(--l4-blur)) saturate(180%);backdrop-filter:blur(var(--l4-blur)) saturate(180%);
+  box-shadow:0 0 0 1px rgba(6,10,4,.2),0 1px 2px rgba(3,6,4,.4),0 8px 20px -8px rgba(3,6,4,.55),
+    inset 0 1px 0 rgba(255,255,255,.3)}
+/* Capa 1: refraccion real, aislada (no encadenada) */
+.l2::after,.l3::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  -webkit-backdrop-filter:url(#lg-refract);backdrop-filter:url(#lg-refract)}
+/* Capa 4: borde Fresnel por conic-gradient (no border uniforme) */
+.l2::before,.l3::before,.l4::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;pointer-events:none;padding:1px;
+  background:conic-gradient(from 130deg,rgba(255,255,255,.72),rgba(255,255,255,.05) 25%,rgba(255,255,255,.4) 50%,rgba(255,255,255,.05) 75%,rgba(255,255,255,.72));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+/* Capa 5: especular diagonal roto, soft-light */
+.l2 > .lg-spec,.l3 > .lg-spec{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(118deg,rgba(255,255,255,.2) 0%,transparent 24%,transparent 60%,rgba(255,255,255,.06) 100%);
+  mix-blend-mode:soft-light}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .l2{background:#0f120b}.l3{background:#151810}.l4{background:#181c12}}
 
 /* ---------- estructura ---------- */
 .shell{display:grid;grid-template-columns:258px 1fr;gap:14px;align-items:start}
@@ -436,6 +477,13 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="lg-refract" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="2" seed="11" result="n"/>
+    <feGaussianBlur in="n" stdDeviation="2.2" result="sn"/>
+    <feDisplacementMap in="SourceGraphic" in2="sn" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs></svg>
 <div class="admin" id="admin">
   <span class="cloud" id="cloud" title="Estado de la nube"><i></i><span id="cloudTxt">Local</span></span>
   <span class="st-msg" id="stMsg" role="status" aria-live="polite"></span>
@@ -449,6 +497,9 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
 </div>
 <button class="eye" id="eye" type="button" title="Mostrar (H)" aria-label="Mostrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
 <input type="file" id="bgIn" accept="image/*" style="display:none"><input type="file" id="avaIn" accept="image/*" style="display:none"><input type="file" id="heroIn" accept="image/*" style="display:none"><input type="file" id="tstIn" accept="image/*" style="display:none">
+
+<div class="lg-field" aria-hidden="true"><span class="lg-b1"></span><span class="lg-b2"></span><span class="lg-b3"></span><span class="lg-b4"></span></div>
+<div class="lg-grain" aria-hidden="true"></div>
 
 <div class="wrap">
  <div class="shell">
