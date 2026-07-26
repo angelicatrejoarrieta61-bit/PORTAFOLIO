@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="v" content="v20-modal-anim-fix"><meta name="v-date" content="2026-07-26 22:57">
+<meta charset="UTF-8"><meta name="v" content="v24-always-anim"><meta name="v-date" content="2026-07-26 22:57">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Joe Pena — Portfolio</title>
 <meta name="description" content="Portfolio de Joe Pena — Disenador Multimedia & Web. Diseno de experiencias digitales, UI/UX, desarrollo web, branding y motion graphics.">
@@ -57,7 +57,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 /* grano global que rompe el banding de los gradientes */
 .lg-grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.14;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E")}
-@media(prefers-reduced-motion:reduce){.lg-field span{animation:none!important}}
+/* animaciones de fondo siempre activas */
 .wrap{position:relative;z-index:5;max-width:var(--page-w);margin:0 auto;padding:var(--page-pad)}
 svg{display:block}
 
@@ -295,7 +295,7 @@ body.editing .pj:hover .pj-th::before{opacity:1}
 .st-msg.ok{color:var(--lime)}
 
 /* ---------- panel estilo ---------- */
-.sp{position:fixed;top:52px;right:14px;bottom:14px;z-index:95;width:282px;padding:15px;overflow-y:auto;border-radius:var(--r);border:1px solid var(--edge-2);background:rgba(10,10,10,.9);-webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%);box-shadow:0 20px 60px rgba(0,0,0,.75);transform:translateX(calc(100% + 24px));transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.sp{position:fixed;top:0;right:0;bottom:0;z-index:95;width:360px;border-radius:0!important;border-left:1px solid var(--edge)!important;border-right:none!important;border-top:none!important;border-bottom:none!important;padding:15px;overflow-y:auto;border-radius:var(--r);border:1px solid var(--edge-2);background:rgba(10,10,10,.9);-webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%);box-shadow:0 20px 60px rgba(0,0,0,.75);transform:translateX(calc(100% + 24px));transition:transform .4s cubic-bezier(.22,1,.36,1)}
 .sp.open{transform:none}
 .sp::-webkit-scrollbar{width:5px}
 .sp::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:99px}
@@ -349,25 +349,20 @@ body.editing .pj:hover .pj-th::before{opacity:1}
 .mcard{position:relative;z-index:2;width:min(880px,100%);max-height:min(82vh,780px);
   display:flex;flex-direction:column;
   border-radius:24px;overflow:hidden;
+  transform-origin:50% 60%;
   background:
     linear-gradient(155deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 40%,rgba(255,255,255,0) 70%),
     linear-gradient(180deg,rgba(24,26,20,.94),rgba(14,15,11,.97));
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.08),                  /* canto exterior */
-    0 40px 100px -20px rgba(0,0,0,.85),               /* ambiental */
-    0 20px 50px -10px rgba(0,0,0,.6),                 /* media */
-    0 8px 20px -6px rgba(0,0,0,.5),                   /* contacto */
-    inset 0 1px 0 rgba(255,255,255,.14),              /* hairline superior */
-    inset 0 -1px 0 rgba(0,0,0,.4);                    /* hairline inferior */
-  /* estado inicial de la animacion */
-  opacity:0;transform:translateY(60px) scale(.85) rotateX(15deg);
-  transform-origin:50% 100%;
+    0 0 0 1px rgba(255,255,255,.08),
+    0 40px 100px -20px rgba(0,0,0,.85),
+    0 20px 50px -10px rgba(0,0,0,.6),
+    0 8px 20px -6px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(0,0,0,.4);
   will-change:transform,opacity}
-
-/* Cuando la mascara tiene .vis, la tarjeta entra */
-.mask.vis .mcard{
-  opacity:1;transform:translateY(0) scale(1) rotateX(0);
-  transition:transform .7s cubic-bezier(.22,1.15,.4,1),opacity .45s cubic-bezier(.22,1,.36,1)}
+/* estado inicial invisible SOLO cuando el modal esta cerrado: evita flash */
+.mask:not(.on) .mcard{opacity:0}
 
 /* Encabezado con separacion clara y jerarquia */
 .mhead{position:relative;padding:28px 36px 20px;
@@ -475,7 +470,7 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
 .cloud.on{color:var(--lime);border-color:rgba(201,243,29,.35);background:rgba(201,243,29,.08)}
 .cloud i{width:5px;height:5px;border-radius:50%;background:currentColor}
 
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* Sitio con animaciones siempre activas (portfolio de disenador) */
 @media print{
   @page{size:landscape;margin:8mm}
   body{background:#fff!important;color:#111!important}
@@ -599,7 +594,7 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
 
       <div class="col-r">
         <section class="l2 spec">
-          <div class="hd"><p class="c-title">Mis Especialidades</p><button class="pill-btn" type="button">Ver todas</button></div>
+          <div class="hd"><p class="c-title">Mis Especialidades</p></div>
           <div class="sk"><span class="sk-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg></span><div class="sk-b"><div class="sk-t"><span class="sk-n" contenteditable="true" data-t="sk1n">Shopify &amp; Liquid</span><span class="sk-p" contenteditable="true" data-t="sk1p">95%</span></div><div class="sk-bar"><div class="sk-f" style="width:95%"></div></div></div></div>
           <div class="sk"><span class="sk-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l-3 3 3 3M16 9l3 3-3 3M13.5 6l-3 12"/></svg></span><div class="sk-b"><div class="sk-t"><span class="sk-n" contenteditable="true" data-t="sk2n">React / TypeScript</span><span class="sk-p" contenteditable="true" data-t="sk2p">92%</span></div><div class="sk-bar"><div class="sk-f" style="width:92%"></div></div></div></div>
           <div class="sk"><span class="sk-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></span><div class="sk-b"><div class="sk-t"><span class="sk-n" contenteditable="true" data-t="sk3n">Integraciones &amp; APIs</span><span class="sk-p" contenteditable="true" data-t="sk3p">90%</span></div><div class="sk-bar"><div class="sk-f" style="width:90%"></div></div></div></div>
@@ -608,7 +603,7 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
         </section>
 
         <section class="l2 act-c">
-          <div class="hd"><p class="c-title">Actividad Reciente</p><button class="pill-btn" type="button">Ver todas</button></div>
+          <div class="hd"><p class="c-title">Actividad Reciente</p></div>
           <div class="ac"><span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span><div class="ac-b"><p class="ac-t" contenteditable="true" data-t="ac1t">Cat&aacute;logo QR desplegado</p><p class="ac-s" contenteditable="true" data-t="ac1s">Tecnocasa Group</p></div><span class="ac-r"><span class="ac-time">10:30 AM</span><i class="ac-dot"></i></span></div>
           <div class="ac"><span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12.4l2.6 2.6L16 9.6"/></svg></span><div class="ac-b"><p class="ac-t" contenteditable="true" data-t="ac2t">Pasarela Clip integrada</p><p class="ac-s" contenteditable="true" data-t="ac2s">Divina Store MX</p></div><span class="ac-r"><span class="ac-time">Ayer</span><i class="ac-dot"></i></span></div>
           <div class="ac"><span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg></span><div class="ac-b"><p class="ac-t" contenteditable="true" data-t="ac3t">Bot de WhatsApp en pruebas</p><p class="ac-s" contenteditable="true" data-t="ac3s">Convenci&oacute;n 2026</p></div><span class="ac-r"><span class="ac-time">2 d&iacute;as</span><i class="ac-dot"></i></span></div>
@@ -618,14 +613,14 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
     </div>
 
     <section class="l2 proj-c">
-      <div class="hd"><p class="c-title">Proyectos Destacados</p><button class="pill-btn" type="button">Ver todos</button></div>
+      <div class="hd"><p class="c-title">Proyectos Destacados</p></div>
       <div class="proj-g">
         <div class="l3 pj">
           <div class="pj-th" data-imgslot="pj1" title="Subir foto del proyecto"><svg viewBox="0 0 200 138"><rect width="200" height="138" fill="#0b0b0b"/><rect x="10" y="10" width="180" height="16" rx="4" fill="#141414"/><circle cx="20" cy="18" r="3" fill="#2a2a2a"/><text x="30" y="66" font-family="Poppins,sans-serif" font-size="19" font-weight="700" fill="#f0f0f0">Creative</text><text x="30" y="84" font-family="Poppins,sans-serif" font-size="13" fill="#c9f31d">Design</text><rect x="30" y="96" width="46" height="11" rx="5.5" fill="#c9f31d"/><rect x="118" y="34" width="72" height="42" rx="6" fill="#131313"/><path d="M126 68l12-16 10 10 12-18 12 24" fill="none" stroke="#c9f31d" stroke-width="2.2"/><rect x="118" y="82" width="34" height="26" rx="5" fill="#131313"/><rect x="156" y="82" width="34" height="26" rx="5" fill="#161616"/><rect x="124" y="92" width="20" height="4" rx="2" fill="#c9f31d" opacity=".8"/></svg></div>
           <div class="pj-m"><div><p class="pj-cat" contenteditable="true" data-t="pj1c">Ecommerce Shopify</p><p class="pj-n" contenteditable="true" data-t="pj1n">Tecnocasa Group</p></div><button class="pj-go" type="button" aria-label="Ver"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button></div>
         </div>
         <div class="l3 pj">
-          <div class="pj-th" data-imgslot="pj2" title="Subir foto del proyecto"><svg viewBox="0 0 200 138"><rect width="200" height="138" fill="#0a0a0a"/><text x="16" y="42" font-family="Poppins,sans-serif" font-size="17" font-weight="700" fill="#efefef" letter-spacing="1">LUXURY</text><rect x="16" y="52" width="56" height="4" rx="2" fill="#2b2b2b"/><rect x="16" y="62" width="40" height="4" rx="2" fill="#1e1e1e"/><rect x="16" y="80" width="42" height="12" rx="6" fill="#c9f31d"/><circle cx="140" cy="70" r="40" fill="#111"/><circle cx="140" cy="70" r="31" fill="none" stroke="#3a3a3a" stroke-width="4"/><circle cx="140" cy="70" r="24" fill="#0e0e0e" stroke="#c9f31d" stroke-width="1.4"/><path d="M140 54v16l11 7" stroke="#c9f31d" stroke-width="2.4" fill="none" stroke-linecap="round"/><rect x="132" y="24" width="16" height="12" rx="4" fill="#242424"/><rect x="132" y="104" width="16" height="12" rx="4" fill="#242424"/></svg></div>
+          <div class="pj-th" data-imgslot="pj2" title="Subir foto del proyecto"><svg viewBox="0 0 200 138"><rect width="200" height="138" fill="#0a0a0a"/><text x="16" y="42" font-family="Poppins,sans-serif" font-size="17" font-weight="700" fill="#efefef" letter-spacing="1">Skincare Premium</text><rect x="16" y="52" width="56" height="4" rx="2" fill="#2b2b2b"/><rect x="16" y="62" width="40" height="4" rx="2" fill="#1e1e1e"/><rect x="16" y="80" width="42" height="12" rx="6" fill="#c9f31d"/><circle cx="140" cy="70" r="40" fill="#111"/><circle cx="140" cy="70" r="31" fill="none" stroke="#3a3a3a" stroke-width="4"/><circle cx="140" cy="70" r="24" fill="#0e0e0e" stroke="#c9f31d" stroke-width="1.4"/><path d="M140 54v16l11 7" stroke="#c9f31d" stroke-width="2.4" fill="none" stroke-linecap="round"/><rect x="132" y="24" width="16" height="12" rx="4" fill="#242424"/><rect x="132" y="104" width="16" height="12" rx="4" fill="#242424"/></svg></div>
           <div class="pj-m"><div><p class="pj-cat" contenteditable="true" data-t="pj2c">Skincare &amp; SEO</p><p class="pj-n" contenteditable="true" data-t="pj2n">Divina Store MX</p></div><button class="pj-go" type="button" aria-label="Ver"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button></div>
         </div>
         <div class="l3 pj">
@@ -668,29 +663,26 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
       <section class="l2 ct-c">
         <p class="c-title">Contacto R&aacute;pido</p>
         <div class="ct-l">
-          <div class="cti"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/></svg><span contenteditable="true" data-t="mail">joe.pena@portfolio.com</span></div>
-          <div class="cti"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span contenteditable="true" data-t="tel">+52 55 1234 5678</span></div>
+          <div class="cti"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/></svg><span contenteditable="true" data-t="mail"><a class="c-link" data-t="cqMail" href="mailto:hola@joepena.design">hola@joepena.design</a></span></div>
+          <div class="cti"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span contenteditable="true" data-t="tel"><a class="c-link" data-t="cqTel" href="tel:+525512345678">+52 55 1234 5678</a></span></div>
           <div class="cti"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span contenteditable="true" data-t="loc">Ciudad de M&eacute;xico, M&eacute;xico</span></div>
           <div class="cti"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg><span contenteditable="true" data-t="web">www.joepena.design</span></div>
         </div>
         <div class="socials">
-          <button class="soc" type="button" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9.5 9H13v1.7c.6-1 1.9-2 3.8-2 3 0 4.2 1.9 4.2 5.2V21h-4v-6c0-1.6-.6-2.6-2-2.6-1.2 0-1.9.8-2.2 1.6-.1.3-.1.7-.1 1.1V21h-4z"/></svg></button>
-          <button class="soc" type="button" aria-label="Dribbble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.3"/><path d="M5 6.5c4.5 4.5 8.4 9.4 10.3 14.6M3.2 13.6c6-.9 11.5.4 16.3 3.4M8.3 3.3c3.4 3 6.7 4.9 12.3 5.4"/></svg></button>
-          <button class="soc" type="button" aria-label="Behance"><span>B&#275;</span></button>
-          <button class="soc" type="button" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5.4"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></button>
+          <a class="soc" data-social="linkedin" href="#" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9.5 9H13v1.7c.6-1 1.9-2 3.8-2 3 0 4.2 1.9 4.2 5.2V21h-4v-6c0-1.6-.6-2.6-2-2.6-1.2 0-1.9.8-2.2 1.6-.1.3-.1.7-.1 1.1V21h-4z"/></svg></a>
+          <a class="soc" data-social="github" href="#" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49v-1.71c-2.78.62-3.37-1.35-3.37-1.35-.46-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.4 9.4 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49C19.14 20.61 22 16.78 22 12.25 22 6.58 17.52 2 12 2z"/></svg></a>
+          <a class="soc" data-social="whatsapp" href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.75-.86-2-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.4-1.47-.88-.79-1.48-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.34.44-.51.15-.17.2-.29.3-.48.1-.2.05-.37-.02-.51-.07-.15-.66-1.6-.91-2.19-.24-.57-.48-.5-.66-.5H8c-.2 0-.51.07-.78.37-.27.3-1.03 1-1.03 2.46 0 1.45 1.05 2.85 1.2 3.05.15.2 2.08 3.17 5.03 4.44.7.3 1.25.48 1.68.62.7.22 1.34.19 1.85.11.56-.08 1.75-.71 2-1.4.25-.69.25-1.28.17-1.4-.07-.12-.27-.2-.57-.35zM12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l5.13-1.34A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></a>
+          <a class="soc" data-social="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5.4"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
         </div>
         <svg class="globe" viewBox="0 0 200 200" fill="none" stroke="#c9f31d" stroke-width="1" opacity=".9"><circle cx="100" cy="100" r="72"/><ellipse cx="100" cy="100" rx="30" ry="72"/><ellipse cx="100" cy="100" rx="55" ry="72"/><path d="M28 100h144M38 64h124M38 136h124M31 82h138M31 118h138"/><g stroke="none"><circle cx="128" cy="86" r="19" fill="#c9f31d" opacity=".14"/><path d="M128 73a9.5 9.5 0 0 1 9.5 9.5c0 7-9.5 16-9.5 16s-9.5-9-9.5-16A9.5 9.5 0 0 1 128 73z" fill="#c9f31d"/><circle cx="128" cy="82.5" r="3.5" fill="#0a0a0a"/></g></svg>
       </section>
     </div>
 
     <footer class="l2 foot">
-      <p class="foot-k">Otras secciones</p>
-      <div class="foot-l">
-        <button class="foot-b" data-modal="mkPromo" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8S9.5 3 7.5 4.5 9.5 8 12 8zM12 8s2.5-5 4.5-3.5S14.5 8 12 8z"/></svg>Programa de promoci&oacute;n</button>
-        <button class="foot-b" data-modal="mkTesters" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2 20v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><path d="M17 8.5a3 3 0 0 0 0-5"/><path d="M19 20v-1a5 5 0 0 0-3-4.6"/></svg>Programa testers (youtubers)</button>
-        <button class="foot-b" data-modal="mkLegal" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Legales y Copyright</button>
-      </div>
       <p class="foot-c">&copy; <span id="yr">2026</span> Joe Pe&ntilde;a &middot; Todos los derechos reservados</p>
+      <div class="foot-l">
+        <button class="foot-b" data-modal="mkLegal" type="button">Aviso legal</button>
+      </div>
     </footer>
   </div>
  </div>
@@ -756,6 +748,16 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
   <div class="sp-s"><h4>Lienzo</h4>
     <div class="sp-r"><span class="l">Ancho max</span><input type="range" min="1100" max="1920" step="20" data-k="pageW"><span class="v" data-v="pageW"></span></div>
     <div class="sp-r"><span class="l">Padding</span><input type="range" min="0" max="60" step="2" data-k="pagePad"><span class="v" data-v="pagePad"></span></div></div>
+    <div class="sp-g"><span class="sp-t">Redes sociales</span>
+    <div class="sp-r"><label>LinkedIn</label><input type="url" id="urLI" placeholder="https://linkedin.com/in/tu-usuario"></div>
+    <div class="sp-r"><label>GitHub</label><input type="url" id="urGH" placeholder="https://github.com/tu-usuario"></div>
+    <div class="sp-r"><label>WhatsApp</label><input type="url" id="urWA" placeholder="https://wa.me/525512345678"></div>
+    <div class="sp-r"><label>Instagram</label><input type="url" id="urIG" placeholder="https://instagram.com/tu-usuario"></div>
+  </div>
+  <div class="sp-g"><span class="sp-t">Contacto directo</span>
+    <div class="sp-r"><label>Correo</label><input type="email" id="urMail" placeholder="hola@joepena.design"></div>
+    <div class="sp-r"><label>Tel&eacute;fono</label><input type="tel" id="urTel" placeholder="+52 55 1234 5678"></div>
+  </div>
   <button class="sp-rst" id="spRst" type="button">Restaurar estilo original</button>
 </aside>
 
@@ -818,22 +820,6 @@ body.editing [data-t]:focus{outline:1px solid var(--lime);outline-offset:3px;bac
   </div>
 </div>
 
-<div class="mask p3d" id="mkPromo" role="dialog" aria-modal="true" aria-labelledby="ttPromo">
-  <div class="mcard">
-    <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="mhead"><p class="mkicker">Otras secciones</p><h3 class="mtitle" id="ttPromo" contenteditable="true" data-t="mkPromoT">Programa de promoci&oacute;n</h3><p class="msub" contenteditable="true" data-t="mkPromoS">Beneficios para clientes y aliados</p></div>
-    <div class="mbody" contenteditable="true" data-t="mkPromoB"><h4>Contenido pendiente</h4><p>Pega aqu&iacute; el texto de tu programa de promoci&oacute;n. Este bloque es editable: haz clic y escribe. Se guarda solo.</p></div>
-  </div>
-</div>
-
-<div class="mask p3d" id="mkTesters" role="dialog" aria-modal="true" aria-labelledby="ttTesters">
-  <div class="mcard">
-    <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="mhead"><p class="mkicker">Otras secciones</p><h3 class="mtitle" id="ttTesters" contenteditable="true" data-t="mkTestT">Programa testers</h3><p class="msub" contenteditable="true" data-t="mkTestS">Creadores e influencers</p></div>
-    <div class="mbody" contenteditable="true" data-t="mkTestB"><h4>Contenido pendiente</h4><p>Pega aqu&iacute; las bases del programa de testers.</p></div>
-  </div>
-</div>
-
 <div class="mask p3d" id="mkLegal" role="dialog" aria-modal="true" aria-labelledby="ttLegal">
   <div class="mcard">
     <button class="mx" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -892,6 +878,45 @@ function apply(){
 }
 function saveS(){try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}}
 function loadS(){try{var r=localStorage.getItem(SK);if(r){var o=JSON.parse(r);for(var k in DEF)if(o[k]!==undefined)S[k]=o[k]}}catch(e){}}
+var LINKS_KEY="jp-links-v1";
+function loadLinks(){
+  var d={};try{d=JSON.parse(localStorage.getItem(LINKS_KEY)||"{}")}catch(e){}
+  applyLinks(d);return d;
+}
+function applyLinks(d){
+  d=d||{};
+  var socMap={linkedin:d.linkedin,github:d.github,whatsapp:d.whatsapp,instagram:d.instagram};
+  for(var k in socMap){
+    var a=document.querySelector('.soc[data-social="'+k+'"]');
+    if(a){
+      if(socMap[k]){a.href=socMap[k];a.style.opacity="1";a.title=""}
+      else{a.href="#";a.style.opacity=".35";a.title="Configura tu URL de "+k+" en el panel de edicion"}
+    }
+  }
+  var mailNodes=document.querySelectorAll('[data-t="cqMail"]');
+  for(var i=0;i<mailNodes.length;i++){
+    if(d.mail){mailNodes[i].href="mailto:"+d.mail;mailNodes[i].textContent=d.mail}
+  }
+  var telNodes=document.querySelectorAll('[data-t="cqTel"]');
+  for(var j=0;j<telNodes.length;j++){
+    if(d.tel){telNodes[j].href="tel:"+d.tel.replace(/[^+0-9]/g,"");telNodes[j].textContent=d.tel}
+  }
+}
+function initLinksPanel(){
+  var d=loadLinks();
+  var map={urLI:"linkedin",urGH:"github",urWA:"whatsapp",urIG:"instagram",urMail:"mail",urTel:"tel"};
+  for(var id in map){(function(el,key){
+    if(!el)return;
+    el.value=d[key]||"";
+    el.oninput=function(){
+      var cur={};try{cur=JSON.parse(localStorage.getItem(LINKS_KEY)||"{}")}catch(e){}
+      cur[key]=el.value.trim();
+      localStorage.setItem(LINKS_KEY,JSON.stringify(cur));
+      applyLinks(cur);
+    };
+  })($(id),map[id])}
+}
+
 function saveT(fb){var o={},e=document.querySelectorAll("[data-t]");for(var i=0;i<e.length;i++)o[e[i].dataset.t]=e[i].innerHTML;
   try{localStorage.setItem(TK,JSON.stringify(o));if(fb)flash("Guardado")}catch(x){if(fb)flash("Sin storage")}}
 function loadT(){try{var r=localStorage.getItem(TK);if(!r)return;var o=JSON.parse(r),e=document.querySelectorAll("[data-t]");
@@ -1005,10 +1030,15 @@ function cloudPush(){
   })(mods[m])}
 }
 function signIn(){
-  var mail=prompt("Correo de editor:");if(!mail)return;
-  var pass=prompt("Contrasena:");if(!pass)return;
+  // Auto-login invisible: credenciales guardadas en config.js del propietario.
+  // Si no las hay, cae a modo local silenciosamente.
+  var cfg=window.APP_CONFIG||{};
+  var mail=cfg.EDITOR_EMAIL, pass=cfg.EDITOR_PASSWORD;
+  if(!mail||!pass){cloudOn("Local",false);return}
   SB.auth.signInWithPassword({email:mail,password:pass}).then(function(r){
-    if(r.error){flash("Acceso denegado")}else{SESSION=r.data.session;cloudOn("Editor",true);flash("Sesion iniciada");cloudPush()}});
+    if(r.error){cloudOn("Local",false);console.warn("[JP] editor no autenticado:",r.error.message)}
+    else{SESSION=r.data.session;cloudOn("Editor",true);cloudPush()}
+  });
 }
 function syncPanel(){var c=document.querySelectorAll(".sp [data-k]");for(var i=0;i<c.length;i++)c[i].value=S[c[i].dataset.k]}
 
@@ -1100,20 +1130,51 @@ $("imX").onclick=function(){$("imgmgr").classList.remove("open")};
 var OPEN=null;
 function openModal(id,fromEl){
   var m=$(id);if(!m)return;
-  OPEN=m;
-  // reset limpio
-  m.classList.remove("on","vis");
-  m.__from=fromEl||null;
-  // mostrar y forzar reflow, luego activar transicion via .vis
-  m.classList.add("on");
+  OPEN=m;m.__from=fromEl||null;
+  var card=m.querySelector(".mcard");if(!card)return;
+
+  // 1. reset: cancelar cualquier animacion previa (WAAPI limpia estado por si sola)
+  if(m.__anim){try{m.__anim.cancel()}catch(e){}}
+  // 2. mostrar
+  m.classList.remove("vis");m.classList.add("on");
   document.body.style.overflow="hidden";
-  // dos rAF para asegurar que .on se pinta antes de agregar .vis
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      m.classList.add("vis");
-      if(m.__from)setTimeout(function(){drawPointer(m.__from,m)},280);
-    });
+
+  var reduce=false; // portfolio: animaciones siempre activas
+
+  // 3. ANIMAR con Web Animations API (imperativo, imposible que no dispare)
+  var from,to;
+  if(reduce){
+    from={opacity:0};to={opacity:1};
+  } else {
+    // origen: hacia donde apunta el boton
+    var ox="50%",oy="60%";
+    if(fromEl){
+      var r=fromEl.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+      ox=(cx/window.innerWidth*100).toFixed(0)+"%";
+      oy=(cy/window.innerHeight*100).toFixed(0)+"%";
+    }
+    card.style.transformOrigin=ox+" "+oy;
+    from={opacity:0,filter:"blur(20px)",transform:"translateY(120px) scale(.4) rotateX(35deg) rotateY(-15deg)"};
+    to={opacity:1,filter:"blur(0px)",transform:"translateY(0px) scale(1) rotateX(0deg) rotateY(0deg)"};
+  }
+  m.__anim=card.animate([from,to],{
+    duration:reduce?200:900,
+    easing:"cubic-bezier(.34,1.56,.5,1)",
+    fill:"forwards"
   });
+  // marcar visible para el velo
+  m.classList.add("vis");
+  m.__anim.onfinish=function(){card.style.opacity="";card.style.transform=""};
+  if(m.__from)setTimeout(function(){drawPointer(m.__from,m)},300);
+
+  console.log("[JP] modal open:",id,"| animation:",m.__anim.playState);
+  // Log visible en pantalla
+  var toast=document.createElement("div");
+  toast.style.cssText="position:fixed;top:12px;right:12px;z-index:9999;background:rgba(0,0,0,.9);color:#c9f31d;padding:8px 14px;border-radius:8px;font:600 12px/1.3 ui-monospace,monospace;border:1px solid #c9f31d;max-width:280px";
+  toast.innerHTML="MODAL: "+id+"<br>playState: "+m.__anim.playState+"<br>duration: "+m.__anim.effect.getTiming().duration+"ms";
+  document.body.appendChild(toast);
+  setTimeout(function(){toast.style.opacity="0";toast.style.transition="opacity .5s"},2500);
+  setTimeout(function(){toast.remove()},3000);
 }
 function drawPointer(fromEl,m){
   var card=m.querySelector(".mcard");if(!card)return;
@@ -1131,9 +1192,18 @@ function drawPointer(fromEl,m){
 }
 function closeModal(){
   if(!OPEN)return;
-  var m=OPEN;$("mPoint").classList.remove("vis");
-  m.classList.remove("vis");
-  setTimeout(function(){m.classList.remove("on");document.body.style.overflow="";m.__from=null},450);
+  var m=OPEN,card=m.querySelector(".mcard");
+  $("mPoint").classList.remove("vis");
+  if(m.__anim){try{m.__anim.cancel()}catch(e){}}
+  var out=card.animate([
+    {opacity:1,transform:card.style.transform||"scale(1)"},
+    {opacity:0,transform:"translateY(20px) scale(.92)"}
+  ],{duration:250,easing:"cubic-bezier(.4,0,.6,1)",fill:"forwards"});
+  out.onfinish=function(){
+    m.classList.remove("on","vis");
+    card.style.opacity="";card.style.transform="";
+    document.body.style.overflow="";m.__from=null;
+  };
   OPEN=null;
 }
 document.addEventListener("click",function(e){
@@ -1175,7 +1245,15 @@ $("ctForm").onsubmit=function(e){
   else{$("ctOk").classList.add("on");$("ctForm").reset();setTimeout(closeModal,1800)}
 };
 
-console.log("[JP] version v20-modal-anim-fix · 2026-07-26 22:57");loadS();apply();initPanel();loadT();loadI();renderImgList();wireProjThumbs();initSB();
+(function(){
+  // Badge visible de version
+  var b=document.createElement("div");
+  b.style.cssText="position:fixed;bottom:12px;left:12px;z-index:9999;background:#c9f31d;color:#0a0b06;padding:6px 12px;border-radius:99px;font:700 11px/1 system-ui;letter-spacing:.05em;box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none";
+  b.textContent="v23 · WAAPI";
+  document.body.appendChild(b);
+  setTimeout(function(){b.style.opacity="0";b.style.transition="opacity .5s"},4000);
+})();
+console.log("[JP] version v24-always-anim · 2026-07-26 22:57");loadS();apply();initPanel();loadT();loadI();renderImgList();wireProjThumbs();initSB();loadLinks();initLinksPanel();
 setEdit(!$("admin").classList.contains("hide"));
 </script>
 </body>
