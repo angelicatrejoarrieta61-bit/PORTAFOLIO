@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="v" content="v25-textos-fix"><meta name="v-date" content="2026-07-26 22:57">
+<meta charset="UTF-8"><meta name="v" content="v25-mail-tel-fix"><meta name="v-date" content="2026-07-26 22:57">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Joe Pena — Portfolio</title>
 <meta name="description" content="Portfolio de Joe Pena — Disenador Multimedia & Web. Diseno de experiencias digitales, UI/UX, desarrollo web, branding y motion graphics.">
@@ -1019,7 +1019,7 @@ function cloudPull(){
   SB.from("site_settings").select("style,texts").eq("id","default").maybeSingle().then(function(r){
     if(r.error||!r.data)return;
     if(r.data.style){for(var k in DEF)if(r.data.style[k]!==undefined)S[k]=r.data.style[k];apply();syncPanel()}
-    if(r.data.texts){var e=document.querySelectorAll("[data-t]");for(var i=0;i<e.length;i++){var v=r.data.texts[e[i].dataset.t];if(v!==undefined)e[i].innerHTML=v}}
+    if(r.data.texts){var e=document.querySelectorAll("[data-t]");for(var i=0;i<e.length;i++){var v=r.data.texts[e[i].dataset.t];if(v!==undefined){if(e[i].tagName==="A")e[i].textContent=v;else e[i].innerHTML=v}}applyLinks(JSON.parse(localStorage.getItem(LINKS_KEY)||"{}"))}
   });
   SB.from("site_images").select("slot,url").then(function(r){
     if(r.error||!r.data)return;
@@ -1272,7 +1272,7 @@ $("ctForm").onsubmit=function(e){
   document.body.appendChild(b);
   setTimeout(function(){b.style.opacity="0";b.style.transition="opacity .5s"},4000);
 })();
-console.log("[JP] version v25-textos-fix · 2026-07-26 22:57");loadS();apply();initPanel();loadT();loadI();renderImgList();wireProjThumbs();initSB();loadLinks();initLinksPanel();
+console.log("[JP] version v25-mail-tel-fix · 2026-07-26 22:57");loadS();apply();initPanel();loadT();loadI();renderImgList();wireProjThumbs();initSB();loadLinks();initLinksPanel();
 setEdit(!$("admin").classList.contains("hide"));
 </script>
 </body>
